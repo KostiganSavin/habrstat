@@ -15,18 +15,17 @@ def parse_habr_page(raw_page):
     article_info = []
 
     soup = BeautifulSoup(raw_page, "html.parser")
-    # print(soup)
     for article_block in soup.find_all(
-        'article', 
-        {'class': 'post_preview'}):
+            'article',
+            {'class': 'post_preview'}):
         raw_article_date = article_block.find('span', {'class': 'post__time'})
         title_link = article_block.find('a', {'class': 'post__title_link'})
-        title_text = article_block.find('div', {'class': 'post__text'})
+        text_block = article_block.find('div', {'class': 'post__text'})
         article_date = parse(raw_article_date.text, languages=['ru'])
         article_info.append({
-            'date': article_date,
+            'date': article_date.date(),
             'title': title_link.contents[0],
-            'preview': title_text.text.replace('\r\n', '')
+            'preview': text_block.text.replace('\n', '').replace('\r', ' ')
         })
     return article_info
 
